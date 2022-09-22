@@ -1,5 +1,5 @@
 from Domain import Users
-from Model import UserRegistrationRequest, UserRegistrationResponse
+from Model import UserLoginRequest, UserLoginResponse, UserRegistrationRequest, UserRegistrationResponse
 from Repository import UserRepository
 
 class UserService() :
@@ -9,7 +9,7 @@ class UserService() :
         self.__userRepository = userRepository
     
     def register(self, request:UserRegistrationRequest) -> UserRegistrationResponse :
-        self.validateRegistrationRequest(request)
+        self.__validateRegistrationRequest(request)
 
         try :
             user = Users()
@@ -23,7 +23,7 @@ class UserService() :
         except :
             raise Exception("Registration Failed")
     
-    def validateRegistrationRequest(self, request:UserRegistrationRequest) -> None :
+    def __validateRegistrationRequest(self, request:UserRegistrationRequest) -> None :
         if (request.username == None or request.password == None or request.passwordVerify == None or
             request.password == "" or request.username == "" or request.passwordVerify == "") :
                 raise Exception("Username and password can not blank")
@@ -34,3 +34,25 @@ class UserService() :
         user = self.__userRepository.findByUsername(request.username)
         if (user != None) :
             raise Exception("Username is already exists")
+    
+    def login(self, request:UserLoginRequest) -> UserLoginResponse :
+        user = self.__validateLoginRequest(request)
+
+        response = UserLoginResponse()
+        response.user = user
+
+        return response
+
+    def __validateLoginRequest(self, request:UserLoginRequest) :
+        if (request.username == None or request.password == None or
+            request.password == "" or request.username == "") :
+                raise Exception("Username and password can not blank")
+        
+        user = self.__userRepository.findByUsername(request.username)
+        if user == None :
+            raise Exception("Username or password is wrong")
+        
+        if request.password != user.password :
+            raise Exception("Username or password is wrong")
+        
+        return user

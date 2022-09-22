@@ -1,6 +1,6 @@
 from Config import Database
 import unittest
-from Model import UserRegistrationRequest
+from Model import UserLoginRequest, UserRegistrationRequest
 from Repository import UserRepository
 from Domain import Users
 from Service import UserService
@@ -91,6 +91,45 @@ class AppTest(unittest.TestCase) :
 
         self.assertEqual(request.username, result.user.username)
         self.assertEqual(request.password, result.user.password)
+    
+    def testLoginBlank(self) :
+        request = UserLoginRequest()
+        request.username = ""
+        request.password = ""
+
+        self.assertRaises(Exception, self.__userService.login, request)
+    
+    def testLoginWrongUsername(self) :
+        request = UserLoginRequest()
+        request.username = "wrong"
+        request.password = "rahasia"
+
+        self.assertRaises(Exception, self.__userService.login, request)
+    
+    def testLoginWrongPassword(self) :
+        request = UserLoginRequest()
+        request.username = "anom"
+        request.password = "wrong"
+
+        self.assertRaises(Exception, self.__userService.login, request)
+    
+    def testLoginSuccess(self) :
+        user = Users()
+        user.username = "anom"
+        user.password = "rahasia"
+        self.__userRepository.save(user)
+
+        request = UserLoginRequest()
+        request.username = "anom"
+        request.password = "rahasia"
+        result = self.__userService.login(request)
+
+        self.assertEqual(user.username, result.user.username)
+        self.assertEqual(user.password, result.user.password)
+    
+    # JUST FOR DELETE ALL
+    def testTrue(self) :
+        self.assertTrue(True)
 
 if __name__ == "__main__" :
     unittest.main()

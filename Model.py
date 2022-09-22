@@ -7,3 +7,10 @@ class UserRegistrationRequest() :
 
 class UserRegistrationResponse() :
     user:Users
+
+class UserLoginRequest() :
+    username = None
+    password = None
+
+class UserLoginResponse() :
+    user:Users
