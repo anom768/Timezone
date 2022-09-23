@@ -1,23 +1,25 @@
 from Config import Database
 import unittest
 from Model import UserLoginRequest, UserRegistrationRequest
-from Repository import UserRepository
-from Domain import Users
+from Repository import TicketRepository, UserRepository
+from Domain import Ticket, Users
 from Service import UserService
-from View import View
 
 class AppTest(unittest.TestCase) :
     
     __connection:Database
     __userRepository:UserRepository
     __userService:UserService
+    __ticketRepository:TicketRepository
 
     def setUp(self) -> None:
         self.__connection = Database.getConnection()
         self.__userRepository = UserRepository(self.__connection)
-        self.__userService = UserService(self.__userRepository)
+        self.__ticketRepository = TicketRepository(self.__connection)
+        self.__userService = UserService(self.__userRepository, self.__ticketRepository)
 
         self.__userRepository.deleteAll()
+        self.__ticketRepository.deleteAll()
 
     # DATABASE TEST
     def testGetConnection(self) :
@@ -126,6 +128,30 @@ class AppTest(unittest.TestCase) :
 
         self.assertEqual(user.username, result.user.username)
         self.assertEqual(user.password, result.user.password)
+    
+    # TICKET REPOSITORY TEST
+    def testSave(self) :
+        ticket = Ticket()
+        ticket.username = "anom"
+        ticket.game = "Guess Number"
+        ticket.ticket = 0
+        result = self.__ticketRepository.save(ticket)
+
+        self.assertEqual(ticket.username, result.username)
+        self.assertEqual(ticket.game, result.game)
+        self.assertEqual(ticket.ticket, result.ticket)
+    
+    def testUpdate(self) :
+        ticket = Ticket()
+        ticket.username = "anom"
+        ticket.game = "Guess Number"
+        ticket.ticket = 10
+        self.__ticketRepository.save(ticket)
+
+        result = self.__ticketRepository.update(ticket.username, ticket.game, ticket.ticket)
+        self.assertEqual(ticket.username, result.username)
+        self.assertEqual(ticket.game, result.game)
+        self.assertEqual(ticket.ticket, result.ticket)
     
     # JUST FOR DELETE ALL
     def testTrue(self) :

@@ -1,12 +1,14 @@
-from Domain import Users
+from Domain import Users, Ticket
 from Model import UserLoginRequest, UserLoginResponse, UserRegistrationRequest, UserRegistrationResponse
-from Repository import UserRepository
+from Repository import TicketRepository, UserRepository
 
 class UserService() :
     __userRepository:UserRepository
+    __ticketRepository:TicketRepository
 
-    def __init__(self, userRepository:UserRepository) -> None:
+    def __init__(self, userRepository:UserRepository, ticketRepository:TicketRepository) -> None:
         self.__userRepository = userRepository
+        self.__ticketRepository = ticketRepository
     
     def register(self, request:UserRegistrationRequest) -> UserRegistrationResponse :
         self.__validateRegistrationRequest(request)
@@ -16,6 +18,18 @@ class UserService() :
             user.username = request.username
             user.password = request.password
             self.__userRepository.save(user)
+
+            ticket = Ticket()
+            ticket.username = user.username
+            ticket.game = "Guess Number"
+            ticket.ticket = 0
+            self.__ticketRepository.save(ticket)
+
+            ticket.game = "Roscipa"
+            self.__ticketRepository.save(ticket)
+
+            ticket.game = "Roll Number"
+            self.__ticketRepository.save(ticket)
 
             response = UserRegistrationResponse()
             response.user = user

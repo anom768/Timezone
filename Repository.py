@@ -1,4 +1,4 @@
-from Domain import Users
+from Domain import Ticket, Users
 from Config import Database
 
 class UserRepository() :
@@ -32,3 +32,46 @@ class UserRepository() :
     
     def deleteAll(self) :
         self.__connection.execute("DELETE FROM users")
+
+class TicketRepository() :
+    def __init__(self, connection:Database) -> None:
+        self.__connection = connection
+        self.__connection.commit()
+    
+    def save(self, ticket:Ticket) -> Ticket :
+        cursor = self.__connection.cursor()
+        cursor.execute("INSERT INTO ticket(user, game, ticket) VALUES(:user, :game, :ticket)", {
+            'user' : ticket.username,
+            'game' : ticket.game,
+            'ticket' : ticket.ticket
+        })
+        self.__connection.commit()
+        return ticket
+    
+    def update(self, username:str, game:str, ticket:int) -> Ticket :
+        cursor = self.__connection.cursor()
+        cursor.execute("UPDATE ticket SET ticket = ticket + :ticket WHERE user = :user AND game = :game", {
+            'user' : username,
+            'game' : game,
+            'ticket' : ticket
+        })
+        self.__connection.commit()
+        
+        tickets = Ticket()
+        tickets.username = username
+        tickets.game = game
+        tickets.ticket = ticket
+
+        return tickets
+    
+    def total(self, username:str) -> int :
+        cursor = self.__connection.cursor()
+        cursor.execute("SELECT SUM(ticket) FROM ticket WHERE user = :user", {
+            'user' : username
+        })
+        row = cursor.fetchone()
+        return int(row[0])
+    
+    def deleteAll(self) :
+        self.__connection.execute("DELETE FROM ticket")
+        self.__connection.commit()
