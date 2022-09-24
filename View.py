@@ -1,3 +1,4 @@
+from re import T
 from Model import UserLoginRequest, UserRegistrationRequest
 from Repository import TicketRepository
 from Service import UserService
@@ -12,6 +13,10 @@ class View() :
         self.__userService = userService
         self.__ticketRepository = ticketRepository
         self.__ticket = 0
+        self.__user_win = 0
+        self.__com_win = 0
+        self.__draw = 0
+        self.__options = ["rock", "scissor", "papper"]
 
     def run(self) :
         print("="*10 + " T I M E Z O N E " + "="*10)
@@ -70,7 +75,7 @@ class View() :
             if choose == "1" :
                 self.playGuessNumber(username)
             elif choose == "2" :
-                print("roscipa")
+                self.playRoscipa(username)
             elif choose == "3" :
                 print("rolling number")
             elif choose == "q" :
@@ -130,7 +135,68 @@ class View() :
     # ================================================
     # ================= R O S C I P A ================
     # ================================================
-
+    def playRoscipa(self, username:str) :
+        print("\n" + "="*10 + " ROCK SCISSOR PAPPER " + "="*10)
+        input ("[#] Press enter to play: ")
+        self.choiceRoscipa(username)
+    
+    def choiceRoscipa(self, username:str) :
+        user_choice = input("[#] Choice (Rock)||(Scissor)||(Papper)||(Q)uit: ").lower()
+        if user_choice == "q":
+            print("    Total Score : ")
+            print(f"    {username}     = {self.__user_win} WON")
+            print(f"    Computer = {self.__com_win} WON")
+            print(f"    Draw     = {self.__draw} Draw")
+            print(f"[$] CONGRATULATION You Got: {self.__user_win} ticket.")
+            self.__ticketRepository.update(username, "Roscipa", self.__user_win)
+            self.__user_win = 0
+            self.__com_win = 0
+            self.__draw = 0
+        elif user_choice not in self.__options:
+            print("[!] ERROR: INVALID INPUT !\n")
+            self.choiceRoscipa(username)
+        else :
+            self.validateChoiceRoscipa(user_choice, username)
+    
+    def validateChoiceRoscipa(self, user_choice:str, username:str) :
+        com_choice = self.__options[random.randint(0, 2)]
+        
+        print("    =>   Computer Choice     : ", com_choice)
+        print(f"    =>   {username} Choice          : ", user_choice)
+        if user_choice == "rock" and com_choice == "scissor":
+            print("    =>   Result              :   YOU WON!")
+            self.__user_win += 1
+        elif user_choice == "scissor" and com_choice == "papper":
+            print("    =>   Result              :   YOU WON!")
+            self.__user_win += 1
+        elif user_choice == "papper" and com_choice == "rock":
+            print("    =>   Result              :   YOU WON!")
+            self.__user_win += 1
+        elif user_choice == com_choice:
+            print("    =>   Result              :   DRAW!")
+            self.__draw += 1
+        else:
+            print("    =>   Result              :   YOU LOSE!")
+            self.__com_win += 1
+        self.playAgainRoscipa(username)
+    
+    def playAgainRoscipa(self, username:str) :
+        choose = input("[?] Play again (y/n): ")
+        if choose.lower() == "y":
+            self.choiceRoscipa(username)
+        elif choose.lower() == "n":
+            print("    Total Score : ")
+            print(f"    {username}     = {self.__user_win} WON")
+            print(f"    Computer = {self.__com_win} WON")
+            print(f"    Draw     = {self.__draw} Draw")
+            print(f"[$] CONGRATULATION You Got: {self.__user_win} ticket.")
+            self.__ticketRepository.update(username, "Roscipa", self.__user_win)
+            self.__user_win = 0
+            self.__com_win = 0
+            self.__draw = 0
+        else:
+            print("[!] ERROR: INVALID INPUT !\n")
+            self.playAgainRoscipa(username)
 
     # ================================================
     # ================= ROLL NUMBER ==================
