@@ -1,5 +1,3 @@
-from ast import Or
-from re import T
 from Model import UserLoginRequest, UserRegistrationRequest
 from Repository import TicketRepository
 from Service import UserService
@@ -74,11 +72,14 @@ class View() :
 
             choose = input("Choose Menu: ")
             if choose == "1" :
-                self.playGuessNumber(username)
+                self.playGame("Guess Number")
+                self.guessNumber(username, number=None)
             elif choose == "2" :
-                self.playRoscipa(username)
+                self.playGame("Roscipa")
+                self.choiceRoscipa(username)
             elif choose == "3" :
-                self.playRollNumber(username)
+                self.playGame("Roll Number")
+                self.rollNumber(username)
             elif choose == "q" :
                 print("="*10 + " E N D E D " + "="*10 + "\n")
                 quit()
@@ -88,10 +89,6 @@ class View() :
     # ================================================
     # ================= GUESS NUMBER =================
     # ================================================
-    def playGuessNumber(self, username:str) :
-        print("\n" + "="*10 + " G U E S S  N U M B E R " + "="*10)
-        input ("[#] Press enter to play: ")
-        self.guessNumber(username, number=None)
     
     def guessNumber(self, username:str , number:int) :   
         if number == None :
@@ -122,10 +119,6 @@ class View() :
     # ================================================
     # ================= R O S C I P A ================
     # ================================================
-    def playRoscipa(self, username:str) :
-        print("\n" + "="*10 + " ROCK SCISSOR PAPPER " + "="*10)
-        input ("[#] Press enter to play: ")
-        self.choiceRoscipa(username)
     
     def choiceRoscipa(self, username:str) :
         user_choice = input("[#] Choice (Rock)||(Scissor)||(Papper)||(Q)uit: ").lower()
@@ -159,10 +152,6 @@ class View() :
     # ================================================
     # ================= ROLL NUMBER ==================
     # ================================================
-    def playRollNumber(self, username:str) :
-        print("\n" + "="*10 + " R O L L I N G   N U M B E R " + "="*10)
-        input ("[#] Press enter to play: ")
-        self.rollNumber(username)
     
     def rollNumber(self, username:str) :
         roll = input("[#] Press Enter to Roll || (Q)uit: ").lower()
@@ -191,8 +180,12 @@ class View() :
         self.rollNumber(username)
     
     # ================================================
-    # =================  S C O R E  ==================
+    # =================  FOR   ALL  ==================
     # ================================================
+    def playGame(self, game:str) :
+        print("\n" + "="*10 + f" {game} " + "="*10)
+        input ("[#] Press enter to play: ")
+
     def playAgain(self, username:str, game:str, number:int) :
         choose = input("[?] Play again (y/n): ")
         if choose.lower() == "y" and game == "Roscipa" :
