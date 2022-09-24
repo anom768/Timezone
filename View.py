@@ -1,3 +1,4 @@
+from ast import Or
 from re import T
 from Model import UserLoginRequest, UserRegistrationRequest
 from Repository import TicketRepository
@@ -110,23 +111,13 @@ class View() :
         if choose == number :
             print("[#] CORRECT: The number is:", number)
             self.__ticket += 1
-            self.playAgainGuessNumber(username)
+            self.playAgain(username, "Guess Number", number)
         elif choose > number:
             print("[!] WRONG: Number too big")
             self.guessNumber(username, number)
         else:
             print("[!] WRONG: Number too small")
             self.guessNumber(username, number)
-    
-    def playAgainGuessNumber(self, username:str) :
-        choose = input("[?] Play again (y/n): ")
-        if choose.lower() == "y":
-            self.guessNumber(username, number=None)
-        elif choose.lower() == "n":
-            self.countScore(username, "Guess Number")
-        else:
-            print("[!] ERROR: INVALID INPUT !\n")
-            self.playAgainGuessNumber(username)
     
     # ================================================
     # ================= R O S C I P A ================
@@ -151,32 +142,19 @@ class View() :
         
         print("    =>   Computer Choice     : ", com_choice)
         print(f"    =>   {username} Choice         : ", user_choice)
-        if user_choice == "rock" and com_choice == "scissor":
-            print("    =>   Result              :   YOU WON!")
-            self.__user_win += 1
-        elif user_choice == "scissor" and com_choice == "papper":
-            print("    =>   Result              :   YOU WON!")
-            self.__user_win += 1
-        elif user_choice == "papper" and com_choice == "rock":
-            print("    =>   Result              :   YOU WON!")
+
+        if (user_choice == "rock" and com_choice == "scissor" or
+            user_choice == "scissor" and com_choice == "papper" or
+            user_choice == "papper" and com_choice == "rock") :
+            print("    =>   Result              :  YOU WON!")
             self.__user_win += 1
         elif user_choice == com_choice:
-            print("    =>   Result              :   DRAW!")
+            print("    =>   Result              :  DRAW!")
             self.__draw += 1
         else:
-            print("    =>   Result              :   YOU LOSE!")
+            print("    =>   Result              :  YOU LOSE!")
             self.__com_win += 1
-        self.playAgainRoscipa(username)
-    
-    def playAgainRoscipa(self, username:str) :
-        choose = input("[?] Play again (y/n): ")
-        if choose.lower() == "y":
-            self.choiceRoscipa(username)
-        elif choose.lower() == "n":
-            self.countScore(username, "Roscipa")
-        else:
-            print("[!] ERROR: INVALID INPUT !\n")
-            self.playAgainRoscipa(username)
+        self.playAgain(username, "Roscipa", None)
 
     # ================================================
     # ================= ROLL NUMBER ==================
@@ -215,6 +193,21 @@ class View() :
     # ================================================
     # =================  S C O R E  ==================
     # ================================================
+    def playAgain(self, username:str, game:str, number:int) :
+        choose = input("[?] Play again (y/n): ")
+        if choose.lower() == "y" and game == "Roscipa" :
+            self.choiceRoscipa(username)
+        elif choose.lower() == "y" and game == "Guess Number" :
+            self.guessNumber(username, number)
+        elif choose.lower() == "n":
+            self.countScore(username, game)
+        else:
+            print("[!] ERROR: INVALID INPUT !\n")
+            if game == "Roscipa" :
+                self.playAgain(username, game, number)
+            else :
+                self.playAgain(username, game, number)
+
     def countScore(self, username:str, game:str) :
         if game == "Roscipa" :
             print("    Total Score : ")
