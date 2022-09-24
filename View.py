@@ -68,7 +68,7 @@ class View() :
 
             choose = input("Choose Menu: ")
             if choose == "1" :
-                self.guessNumber(username)
+                self.playGuessNumber(username)
             elif choose == "2" :
                 print("roscipa")
             elif choose == "3" :
@@ -78,45 +78,47 @@ class View() :
                 quit()
             else :
                 print("[!] ERROR: INVALID INPUT !\n")
-                
+    
+    # ================================================
     # ================= GUESS NUMBER =================
-    def guessNumber(self, username:str) :
+    # ================================================
+    def playGuessNumber(self, username:str) :
         print("\n" + "="*10 + " G U E S S  N U M B E R " + "="*10)
         input ("[#] Press enter to play: ")
-        self.playGuessNumber(username, number=None)
+        self.guessNumber(username, number=None)
     
-    def playGuessNumber(self, username:str , number:int) :   
+    def guessNumber(self, username:str , number:int) :   
         if number == None :
             number = random.randint(0, 9)
 
         guess = input("[#] (q for exit) Guess number 0 - 9: ")
         if guess.isdigit():
             guess = int(guess)
-            self.playingGuessNumber(username, guess, number)
+            self.validateGuessNumber(username, guess, number)
         elif guess.lower() == 'q':
             print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
             self.__ticketRepository.update(username, "Guess Number", self.__ticket)
             self.__ticket = 0
         else:                                                                                                                                                                                                                                                                                                                                                                                                                                         
             print("[!] ERROR: INVALID INPUT !\n")
-            self.playGuessNumber(username, number)
+            self.guessNumber(username, number)
 
-    def playingGuessNumber(self, username:str, choose:int, number:int) :
+    def validateGuessNumber(self, username:str, choose:int, number:int) :
         if choose == number :
             print("[#] CORRECT: The number is:", number)
             self.__ticket += 1
             self.playAgainGuessNumber(username)
         elif choose > number:
             print("[!] WRONG: Number too big")
-            self.playGuessNumber(username, number)
+            self.guessNumber(username, number)
         else:
             print("[!] WRONG: Number too small")
-            self.playGuessNumber(username, number)
+            self.guessNumber(username, number)
     
     def playAgainGuessNumber(self, username:str) :
         choose = input("[?] Play again (y/n): ")
         if choose.lower() == "y":
-            self.playGuessNumber(username, number=None)
+            self.guessNumber(username, number=None)
         elif choose.lower() == "n":
             print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
             self.__ticketRepository.update(username, "Guess Number", self.__ticket)
@@ -124,3 +126,12 @@ class View() :
         else:
             print("[!] ERROR: INVALID INPUT !\n")
             self.playAgainGuessNumber(username)
+    
+    # ================================================
+    # ================= R O S C I P A ================
+    # ================================================
+
+
+    # ================================================
+    # ================= ROLL NUMBER ==================
+    # ================================================
