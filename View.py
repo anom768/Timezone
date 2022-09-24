@@ -77,7 +77,7 @@ class View() :
             elif choose == "2" :
                 self.playRoscipa(username)
             elif choose == "3" :
-                print("rolling number")
+                self.playRollNumber(username)
             elif choose == "q" :
                 print("="*10 + " E N D E D " + "="*10 + "\n")
                 quit()
@@ -201,3 +201,35 @@ class View() :
     # ================================================
     # ================= ROLL NUMBER ==================
     # ================================================
+    def playRollNumber(self, username:str) :
+        print("\n" + "="*10 + " R O L L I N G   N U M B E R " + "="*10)
+        input ("[#] Press enter to play: ")
+        self.rollNumber(username)
+    
+    def rollNumber(self, username:str) :
+        roll = input("[#] Press Enter to Roll || (Q)uit: ").lower()
+        if roll == "q":
+            print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
+            self.__ticketRepository.update(username, "Roll Number", self.__ticket)
+            self.__ticket = 0
+        else :
+            number1 = random.randint(0,9)
+            number2 = random.randint(0,9)
+            number3 = random.randint(0,9)
+            print("\n")
+            print("="*33)
+            print("="*10,f" {number1} | {number2} | {number3} ", "="*10)
+            print("="*33)
+            print("\n")
+            self.validateRollNumber(number1, number2, number3, username)
+    
+    def validateRollNumber(self, number1:int, number2:int, number3:int, username:str) :
+        if number1 != number2 and number2 != number3 and number1 != number3:
+            print("[#] No number same. Ticket + 0",)
+        elif number1 == number2 == number3:
+            print("[$] CONGRATULATION JACKPOT. Ticket + 10")
+            self.__ticket += 10
+        else:
+            print("[#] Two numbers same. Ticket + 1")
+            self.__ticket += 1
+        self.rollNumber(username)
