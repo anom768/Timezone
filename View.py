@@ -94,9 +94,9 @@ class View() :
             guess = int(guess)
             self.playingGuessNumber(username, guess, number)
         elif guess.lower() == 'q':
-            pass
-            # print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
-            # self.__ticketRepository.update(username, "Guess Number", self.__ticket-1)
+            print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
+            self.__ticketRepository.update(username, "Guess Number", self.__ticket)
+            self.__ticket = 0
         else:                                                                                                                                                                                                                                                                                                                                                                                                                                         
             print("[!] ERROR: INVALID INPUT !\n")
             self.playGuessNumber(username, number)
@@ -104,6 +104,7 @@ class View() :
     def playingGuessNumber(self, username:str, choose:int, number:int) :
         if choose == number :
             print("[#] CORRECT: The number is:", number)
+            self.__ticket += 1
             self.playAgainGuessNumber(username)
         elif choose > number:
             print("[!] WRONG: Number too big")
@@ -115,12 +116,11 @@ class View() :
     def playAgainGuessNumber(self, username:str) :
         choose = input("[?] Play again (y/n): ")
         if choose.lower() == "y":
-            self.__ticket += 1
             self.playGuessNumber(username, number=None)
         elif choose.lower() == "n":
             print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
-            self.__ticketRepository.update(username, "Guess Number", self.__ticket+1)
+            self.__ticketRepository.update(username, "Guess Number", self.__ticket)
             self.__ticket = 0
         else:
             print("[!] ERROR: INVALID INPUT !\n")
-            self.playAgainGuessNumber()
+            self.playAgainGuessNumber(username)

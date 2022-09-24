@@ -48,7 +48,7 @@ class TicketRepository() :
         self.__connection.commit()
         return ticket
     
-    def update(self, username:str, game:str, ticket:int) -> Ticket :
+    def update(self, username:str, game:str, ticket:int) :
         cursor = self.__connection.cursor()
         cursor.execute("UPDATE ticket SET ticket = ticket + :ticket WHERE user = :user AND game = :game", {
             'user' : username,
@@ -56,13 +56,18 @@ class TicketRepository() :
             'ticket' : ticket
         })
         self.__connection.commit()
-        
-        tickets = Ticket()
-        tickets.username = username
-        tickets.game = game
-        tickets.ticket = ticket
 
-        return tickets
+    def findTicket(self, username:str, game:str) -> int :
+        cursor = self.__connection.cursor()
+        statement = cursor.execute("SELECT ticket from ticket WHERE user = :user AND game = :game", {
+            'user' : username,
+            'game' : game
+        })
+        row = statement.fetchone()
+        if row :
+            return row[0]
+        else :
+            return None
     
     def total(self, username:str) -> int :
         cursor = self.__connection.cursor()

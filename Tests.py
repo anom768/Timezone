@@ -148,13 +148,15 @@ class AppTest(unittest.TestCase) :
         ticket.ticket = 10
         self.__ticketRepository.save(ticket)
 
-        result = self.__ticketRepository.update(ticket.username, ticket.game, ticket.ticket)
-        self.assertEqual(ticket.username, result.username)
-        self.assertEqual(ticket.game, result.game)
-        self.assertEqual(ticket.ticket, result.ticket)
+        self.__ticketRepository.update(ticket.username, ticket.game, 2)
+
+        result = self.__ticketRepository.findTicket(ticket.username, ticket.game)
+        self.assertEqual(12, result)
+        self.__ticketRepository.deleteAll()
     
     # JUST FOR DELETE ALL
     def testTrue(self) :
+        self.__userRepository.deleteAll()
         self.assertTrue(True)
 
 if __name__ == "__main__" :
