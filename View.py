@@ -101,9 +101,7 @@ class View() :
             guess = int(guess)
             self.validateGuessNumber(username, guess, number)
         elif guess.lower() == 'q':
-            print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
-            self.__ticketRepository.update(username, "Guess Number", self.__ticket)
-            self.__ticket = 0
+            self.countScore(username, "Guess Number")
         else:                                                                                                                                                                                                                                                                                                                                                                                                                                         
             print("[!] ERROR: INVALID INPUT !\n")
             self.guessNumber(username, number)
@@ -125,9 +123,7 @@ class View() :
         if choose.lower() == "y":
             self.guessNumber(username, number=None)
         elif choose.lower() == "n":
-            print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
-            self.__ticketRepository.update(username, "Guess Number", self.__ticket)
-            self.__ticket = 0
+            self.countScore(username, "Guess Number")
         else:
             print("[!] ERROR: INVALID INPUT !\n")
             self.playAgainGuessNumber(username)
@@ -143,15 +139,7 @@ class View() :
     def choiceRoscipa(self, username:str) :
         user_choice = input("[#] Choice (Rock)||(Scissor)||(Papper)||(Q)uit: ").lower()
         if user_choice == "q":
-            print("    Total Score : ")
-            print(f"    {username}     = {self.__user_win} WON")
-            print(f"    Computer = {self.__com_win} WON")
-            print(f"    Draw     = {self.__draw} Draw")
-            print(f"[$] CONGRATULATION You Got: {self.__user_win} ticket.")
-            self.__ticketRepository.update(username, "Roscipa", self.__user_win)
-            self.__user_win = 0
-            self.__com_win = 0
-            self.__draw = 0
+             self.countScore(username, "Roscipa")
         elif user_choice not in self.__options:
             print("[!] ERROR: INVALID INPUT !\n")
             self.choiceRoscipa(username)
@@ -162,7 +150,7 @@ class View() :
         com_choice = self.__options[random.randint(0, 2)]
         
         print("    =>   Computer Choice     : ", com_choice)
-        print(f"    =>   {username} Choice          : ", user_choice)
+        print(f"    =>   {username} Choice         : ", user_choice)
         if user_choice == "rock" and com_choice == "scissor":
             print("    =>   Result              :   YOU WON!")
             self.__user_win += 1
@@ -185,15 +173,7 @@ class View() :
         if choose.lower() == "y":
             self.choiceRoscipa(username)
         elif choose.lower() == "n":
-            print("    Total Score : ")
-            print(f"    {username}     = {self.__user_win} WON")
-            print(f"    Computer = {self.__com_win} WON")
-            print(f"    Draw     = {self.__draw} Draw")
-            print(f"[$] CONGRATULATION You Got: {self.__user_win} ticket.")
-            self.__ticketRepository.update(username, "Roscipa", self.__user_win)
-            self.__user_win = 0
-            self.__com_win = 0
-            self.__draw = 0
+            self.countScore(username, "Roscipa")
         else:
             print("[!] ERROR: INVALID INPUT !\n")
             self.playAgainRoscipa(username)
@@ -209,9 +189,7 @@ class View() :
     def rollNumber(self, username:str) :
         roll = input("[#] Press Enter to Roll || (Q)uit: ").lower()
         if roll == "q":
-            print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
-            self.__ticketRepository.update(username, "Roll Number", self.__ticket)
-            self.__ticket = 0
+            self.countScore(username, "Roll Number")
         else :
             number1 = random.randint(0,9)
             number2 = random.randint(0,9)
@@ -233,3 +211,20 @@ class View() :
             print("[#] Two numbers same. Ticket + 1")
             self.__ticket += 1
         self.rollNumber(username)
+    
+    # ================================================
+    # =================  S C O R E  ==================
+    # ================================================
+    def countScore(self, username:str, game:str) :
+        if game == "Roscipa" :
+            print("    Total Score : ")
+            print(f"    {username}     = {self.__user_win} WON")
+            print(f"    Computer = {self.__com_win} WON")
+            print(f"    Draw     = {self.__draw} Draw")
+            self.__ticket = self.__user_win
+        print(f"[$] CONGRATULATION You Got: {self.__ticket} ticket.")
+        self.__ticketRepository.update(username, game, self.__ticket)
+        self.__ticket = 0
+        self.__user_win = 0
+        self.__com_win = 0
+        self.__draw = 0
